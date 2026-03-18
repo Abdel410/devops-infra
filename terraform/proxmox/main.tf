@@ -1,0 +1,59 @@
+resource "proxmox_vm_qemu" "k8s-master" {
+  name        = "k8s-master"
+  target_node = var.proxmox_node
+  clone       = var.template_name
+  cores       = 2
+  memory      = 4096
+  disk {
+    storage = var.storage
+    size    = "20G"
+    type    = "scsi"
+  }
+  network {
+    model  = "virtio"
+    bridge = "vmbr1"
+  }
+  os_type   = "cloud-init"
+  ipconfig0 = "ip=10.0.0.10/24,gw=10.0.0.1"
+  sshkeys   = file(var.ssh_public_key)
+}
+
+resource "proxmox_vm_qemu" "k8s-worker1" {
+  name        = "k8s-worker1"
+  target_node = var.proxmox_node
+  clone       = var.template_name
+  cores       = 2
+  memory      = 4096
+  disk {
+    storage = var.storage
+    size    = "20G"
+    type    = "scsi"
+  }
+  network {
+    model  = "virtio"
+    bridge = "vmbr1"
+  }
+  os_type   = "cloud-init"
+  ipconfig0 = "ip=10.0.0.11/24,gw=10.0.0.1"
+  sshkeys   = file(var.ssh_public_key)
+}
+
+resource "proxmox_vm_qemu" "k8s-worker2" {
+  name        = "k8s-worker2"
+  target_node = var.proxmox_node
+  clone       = var.template_name
+  cores       = 2
+  memory      = 4096
+  disk {
+    storage = var.storage
+    size    = "20G"
+    type    = "scsi"
+  }
+  network {
+    model  = "virtio"
+    bridge = "vmbr1"
+  }
+  os_type   = "cloud-init"
+  ipconfig0 = "ip=10.0.0.12/24,gw=10.0.0.1"
+  sshkeys   = file(var.ssh_public_key)
+}
