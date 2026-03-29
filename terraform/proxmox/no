@@ -4,12 +4,11 @@ resource "proxmox_vm_qemu" "k8s-master" {
   clone       = var.template_name
   cores       = 2
   memory      = 4096
-  vmid        = 100 
   disk {
-    slot = "scsi0"
+    slot = 0
     storage = var.storage
     size    = "20G"
-    type    = "disk"
+    type    = "scsi"
   }
   network {
     model  = "virtio"
@@ -26,12 +25,11 @@ resource "proxmox_vm_qemu" "k8s-worker1" {
   clone       = var.template_name
   cores       = 2
   memory      = 4096
-  vmid        = 101
   disk {
-    slot = "scsi0"
+    slot = 0
     storage = var.storage
     size    = "20G"
-    type    = "disk"
+    type    = "scsi"
   }
   network {
     model  = "virtio"
@@ -40,7 +38,6 @@ resource "proxmox_vm_qemu" "k8s-worker1" {
   os_type   = "cloud-init"
   ipconfig0 = "ip=10.0.0.11/24,gw=10.0.0.1"
   sshkeys   = file(var.ssh_public_key)
- depends_on = [proxmox_vm_qemu.k8s-master]
 }
 
 resource "proxmox_vm_qemu" "k8s-worker2" {
@@ -49,12 +46,11 @@ resource "proxmox_vm_qemu" "k8s-worker2" {
   clone       = var.template_name
   cores       = 2
   memory      = 4096
-  vmid        = 102
   disk {
-    slot = "scsi0"
+    slot = 0≈
     storage = var.storage
     size    = "20G"
-    type    = "disk"
+    type    = "scsi"
   }
   network {
     model  = "virtio"
@@ -63,5 +59,4 @@ resource "proxmox_vm_qemu" "k8s-worker2" {
   os_type   = "cloud-init"
   ipconfig0 = "ip=10.0.0.12/24,gw=10.0.0.1"
   sshkeys   = file(var.ssh_public_key)
-  depends_on = [proxmox_vm_qemu.k8s-worker1]
 }
