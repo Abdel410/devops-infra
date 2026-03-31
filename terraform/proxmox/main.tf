@@ -5,6 +5,8 @@ resource "proxmox_vm_qemu" "k8s-master" {
   cores       = 2
   memory      = 4096
   vmid        = 100 
+  scsihw      = "virtio-scsi-pci"
+  agent       = 1 
   disk {
     slot = "scsi0"
     storage = var.storage
@@ -16,6 +18,8 @@ resource "proxmox_vm_qemu" "k8s-master" {
     bridge = "vmbr1"
   }
   os_type   = "cloud-init"
+  ciuser    = "ubuntu"
+  cicustom    = "network=local:snippets/network-master.yaml" 
   ipconfig0 = "ip=10.0.0.10/24,gw=10.0.0.1"
   sshkeys   = file(var.ssh_public_key)
 }
@@ -27,7 +31,10 @@ resource "proxmox_vm_qemu" "k8s-worker1" {
   cores       = 2
   memory      = 4096
   vmid        = 101
-  disk {
+  scsihw      = "virtio-scsi-pci"
+  agent       = 1 
+ 
+ disk {
     slot = "scsi0"
     storage = var.storage
     size    = "20G"
@@ -38,6 +45,8 @@ resource "proxmox_vm_qemu" "k8s-worker1" {
     bridge = "vmbr1"
   }
   os_type   = "cloud-init"
+  ciuser    = "ubuntu"
+  cicustom    = "network=local:snippets/network-worker1.yaml" 
   ipconfig0 = "ip=10.0.0.11/24,gw=10.0.0.1"
   sshkeys   = file(var.ssh_public_key)
  depends_on = [proxmox_vm_qemu.k8s-master]
@@ -50,6 +59,9 @@ resource "proxmox_vm_qemu" "k8s-worker2" {
   cores       = 2
   memory      = 4096
   vmid        = 102
+  scsihw      = "virtio-scsi-pci"
+  agent       = 1
+
   disk {
     slot = "scsi0"
     storage = var.storage
@@ -61,6 +73,8 @@ resource "proxmox_vm_qemu" "k8s-worker2" {
     bridge = "vmbr1"
   }
   os_type   = "cloud-init"
+  ciuser  = "ubuntu"
+  cicustom = "network=local:snippets/network-worker2.yaml"
   ipconfig0 = "ip=10.0.0.12/24,gw=10.0.0.1"
   sshkeys   = file(var.ssh_public_key)
   depends_on = [proxmox_vm_qemu.k8s-worker1]
